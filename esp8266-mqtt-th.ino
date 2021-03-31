@@ -21,13 +21,19 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-const char* ssid = "****";
-const char* password = "****";
-const char* mqtt_server = "****";
+/* Local Configuration */
+
+const char* ssid = "***";
+const char* password = "***";
+const char* mqtt_server = "***";
+String mainTopic = "ha";
+String temperatureTopic = "_temperature";
+String humidityTopic = "_humidity";
 
 uint8_t readStatus = 0;
 float temperature = 0;
 float humidity = 0;
+String clientId = "";
 
 AHT10 myAHT10(AHT10_ADDRESS_0X38);
 WiFiClient espClient;
@@ -37,6 +43,11 @@ void setup_wifi() {
   delay(10);
   // We start by connecting to a WiFi network
   Serial.println();
+  clientId = String(WiFi.macAddress()).substring(15);
+  clientId.toLowerCase();
+  temperatureTopic = mainTopic + "/_" + clientId + "/" + temperatureTopic;
+  humidityTopic = mainTopic + "/_" + clientId + "/" + humidityTopic;
+  Serial.println("Client Id: " + clientId);
   Serial.print("Connecting to ");
   Serial.println(ssid);
   WiFi.begin(ssid, password);
@@ -48,7 +59,7 @@ void setup_wifi() {
   }
   Serial.println("");
   Serial.println("WiFi connected");
-  Serial.println("IP address: ");
+  Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 }
 
@@ -97,12 +108,12 @@ void loop()
   }
   temperature = myAHT10.readTemperature(AHT10_FORCE_READ_DATA);
   Serial.print(F("Temperature: ")); Serial.print(temperature);
-  client.publish("ha/_temperature1", String(temperature).c_str(), true);
+  client.publish(temperatureTopic.c_str(), String(temperature).c_str(), true);
   Serial.println("...published");
   
   humidity = myAHT10.readHumidity(AHT10_USE_READ_DATA);
   Serial.print(F("Humidity...: ")); Serial.print(humidity);
-  client.publish("ha/_humidity1", String(humidity).c_str(), true);
+  client.publish(humidityTopic.c_str(), String(humidity).c_str(), true);
   Serial.println("...published");
   Serial.println();
 
