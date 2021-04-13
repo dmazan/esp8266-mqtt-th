@@ -20,12 +20,13 @@
 #include <Wire.h>
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
+#include <secret.h>
 
-/* Local Configuration */
+/* Local Configuration - ALL_CAPS identifiers are defined in secret.h */
 
-const char* ssid = "***";
-const char* password = "***";
-const char* mqtt_server = "***";
+const char* ssid = SECRET_SSID;
+const char* password = SECRET_PASSWORD;
+const char* mqtt_server = SECRET_MQTT_SERVER;
 String mainTopic = "ha";
 String temperatureTopic = "_temperature";
 String humidityTopic = "_humidity";
