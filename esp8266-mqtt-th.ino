@@ -44,6 +44,7 @@ void setup_wifi() {
   delay(10);
   // We start by connecting to a WiFi network
   Serial.println();
+  WiFi.mode(WIFI_STA);
   clientId = String(WiFi.macAddress()).substring(15);
   clientId.toLowerCase();
   temperatureTopic = mainTopic + "/_" + clientId + "/" + temperatureTopic;
